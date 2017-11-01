@@ -1,15 +1,11 @@
 package com.wps.util.converter;
 
-import com.sun.org.apache.xerces.internal.xs.datatypes.ObjectList;
-import org.apache.poi.xwpf.converter.core.utils.XWPFTableUtil;
 import org.apache.poi.xwpf.usermodel.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTRow;
-import org.openxmlformats.schemas.wordprocessingml.x2006.main.impl.CTRowImpl;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.util.SerializationUtils;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
