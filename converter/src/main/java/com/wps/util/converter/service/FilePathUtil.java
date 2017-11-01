@@ -7,8 +7,10 @@ package com.wps.util.converter.service;
  **/
 public class FilePathUtil {
     public static String getPathById(){
-        String path=ClassLoader.getSystemResource("").getPath();
-        path=path+"template//";
+        //String path=ClassLoader.getSystemResource("").getPath();
+//        path=path+"template//";
+        String path = FileService.class.getClassLoader().getResource("template").getPath();
+        System.out.println(path);
         return  path;
     }
 }

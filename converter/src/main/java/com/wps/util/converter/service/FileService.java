@@ -20,8 +20,8 @@ import java.util.regex.Pattern;
 public class FileService {
 
     public String file(Map<String,Object> replacetor,int form_type) throws Exception{
-        String OUTPUT_PATH=FilePathUtil.getPathById()+"test.docx";
-        String INPUT_PATH=FilePathUtil.getPathById()+"form"+form_type+".docx";
+        String OUTPUT_PATH=FilePathUtil.getPathById()+"/test.docx";
+        String INPUT_PATH=FilePathUtil.getPathById()+"/form"+form_type+".docx";
         try {
 
             InputStream is = new FileInputStream(INPUT_PATH);
