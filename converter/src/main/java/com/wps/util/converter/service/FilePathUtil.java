@@ -1,6 +1,5 @@
 package com.wps.util.converter.service;
 
-import java.io.File;
 
 /**
  * @author yang
