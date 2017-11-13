@@ -22,6 +22,7 @@ public class FileService {
     public String file(Map<String,Object> replacetor,int form_type) throws Exception{
         String OUTPUT_PATH=FilePathUtil.getPathById()+"/test.docx";
         String INPUT_PATH=FilePathUtil.getPathById()+"/form"+form_type+".docx";
+        System.out.println(form_type);
         try {
 
             InputStream is = new FileInputStream(INPUT_PATH);
@@ -30,6 +31,13 @@ public class FileService {
             if(form_type==2){
                 form2Sublist(doc,(List<Object>)replacetor.get("subList"),4);
             }
+            if(form_type==5){
+                form2Sublist(doc,(List<Object>)replacetor.get("subList"),5);
+            }
+            if(form_type==7||form_type==6){
+                form2Sublist(doc,(List<Object>)replacetor.get("subList"),1);
+            }
+
 //            if(replacetor.get("subList")!=null)
 //            {
 //                Object a=replacetor.get("subList");
@@ -112,11 +120,12 @@ public class FileService {
             for (int i = 0; i < runs.size(); i++) {
                 XWPFRun run = runs.get(i);
                 String runText = run.toString();
+                System.out.println(runText);
                 matcher = this.matcher(runText);
                 if (matcher.find()) {
                     while ((matcher = this.matcher(runText)).find()) {
                         Object ob=params.get(matcher.group(1));
-                        if(ob!=null){
+                        if(ob!=null&&ob.toString()!=""){
                             runText = matcher.replaceFirst(String.valueOf(ob));
                         }
                         else{
@@ -128,7 +137,13 @@ public class FileService {
                     //直接调用XWPFRun的setText()方法设置文本时，在底层会重新创建一个XWPFRun，把文本附加在当前文本后面，
                     //所以我们不能直接设值，需要先删除当前run,然后再自己手动插入一个新的run。
                     para.removeRun(i);
-                    para.insertNewRun(i).setText(runText);
+                    if((FilePathUtil.isChinese(runText)&&runText.length()>8)||runText.length()>=17){
+                        para.insertNewRun(i).setFontSize(7);
+                        para.getRuns().get(i).setText(runText);
+                    }
+                    else{
+                        para.insertNewRun(i).setText(runText);
+                    }
                 }
             }
         }

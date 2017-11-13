@@ -19,6 +19,7 @@ public class Converter {
     @RequestMapping(value = "/getpdf/{formType}")
     public void download(@RequestBody Map<String,Object> formMap, @PathVariable("formType") int formType, HttpServletResponse response)throws Exception{
        // String path =converter(request);
+        System.out.println("catch map value:");
         System.out.println(formMap.toString());
         FileService fileService=new FileService();
         String path=fileService.file(formMap,formType);

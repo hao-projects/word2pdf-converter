@@ -1,5 +1,6 @@
 package com.wps.util.converter;
 
+import com.wps.util.converter.service.FilePathUtil;
 import org.apache.poi.xwpf.usermodel.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,13 +23,13 @@ public class ConverterApplicationTests {
 	public void contextLoads() throws Exception{
 		try {
 
-			InputStream is = new FileInputStream("/home/ctt/Downloads/form2.docx");
+			InputStream is = new FileInputStream("/home/ctt/yang-workspace/web/word2pdf-converter/converter/src/main/resources/template/form1.docx");
 			Map<String,Object> replacetor=new HashMap<String,Object>();
 			replacetor.put("companyCode","dianshu");
 			replacetor.put("manuComName","dierg");
 			replacetor.put("manufactureDate","hhhh");
 			Map<String,Object> replacetor2=new HashMap<String,Object>();
-			replacetor2.put("companyCode","dianshu2");
+			replacetor2.put("companyCode","好型急死了都放假了时间阿斯顿发生");
 			replacetor2.put("manuComName","dierg2");
 			replacetor2.put("manufactureDate","hhhh2");
 			List<Object> list=new ArrayList<Object>();
@@ -40,25 +41,25 @@ public class ConverterApplicationTests {
 			XWPFTable table=tables.get(0);
 			int i=4;
 			List<XWPFTableRow> header=new ArrayList<XWPFTableRow>();
-
-			for(Object str:list){
-				System.out.println(i);
-				Map<String,Object> map=(Map<String,Object>)str;
-				//System.out.println(j);
-				CTRow ctRow=CTRow.Factory.newInstance();
-				ctRow.set(table.getRow(4).getCtRow());
-				XWPFTableRow row=new XWPFTableRow(ctRow,table);
-				for(XWPFTableCell cell:row.getTableCells())
-				{
-					for(XWPFParagraph para:cell.getParagraphs()){
-						replaceInPara(para,map);
-					}
-
-				}
-				table.addRow(row,5);
-
-			}
-			table.removeRow(4);
+//
+//			for(Object str:list){
+//				System.out.println(i);
+//				Map<String,Object> map=(Map<String,Object>)str;
+//				//System.out.println(j);
+//				CTRow ctRow=CTRow.Factory.newInstance();
+//				ctRow.set(table.getRow(4).getCtRow());
+//				XWPFTableRow row=new XWPFTableRow(ctRow,table);
+//				for(XWPFTableCell cell:row.getTableCells())
+//				{
+//					for(XWPFParagraph para:cell.getParagraphs()){
+//						replaceInPara(para,map);
+//					}
+//
+//				}
+//				table.addRow(row,5);
+//
+//			}
+//			table.removeRow(4);
 
 
 			//table.addNewRowBetween(0,1);
@@ -122,7 +123,12 @@ public class ConverterApplicationTests {
 					//直接调用XWPFRun的setText()方法设置文本时，在底层会重新创建一个XWPFRun，把文本附加在当前文本后面，
 					//所以我们不能直接设值，需要先删除当前run,然后再自己手动插入一个新的run。
 					para.removeRun(i);
-					para.insertNewRun(i).setText(runText);
+					if((FilePathUtil.isChinese(runText)&&runText.length()>8)||runText.length()>=17){
+						para.insertNewRun(i).setFontSize(7);
+						para.getRuns().get(i).setText(runText);
+					}
+					else
+						para.insertNewRun(i).setText(runText);
 				}
 			}
 		}
