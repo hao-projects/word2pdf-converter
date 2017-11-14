@@ -79,6 +79,7 @@ public class FileService {
     }
     private void form2Sublist(XWPFDocument doc,List<Object> list,int list_pos){
         XWPFTable table=doc.getTables().get(0);
+        int i=0;
         for(Object str:list){
             Map<String,Object> map=(Map<String,Object>)str;
             CTRow ctRow=CTRow.Factory.newInstance();
@@ -91,7 +92,8 @@ public class FileService {
                 }
 
             }
-            table.addRow(row,list_pos+1);
+            i++;
+            table.addRow(row,list_pos+i);
 
         }
         table.removeRow(list_pos);
