@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.util.Map;
 import java.util.Random;
+import java.util.concurrent.Callable;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -41,11 +42,6 @@ public class Converter {
         Random random=new Random();
         int a=random.nextInt(50);
         String fileName=a+"download.pdf";
-        //检查applyid是否是下载者的
-        //validate.isPermission(SecurityUtils.getSubject(),fileService.getFileById(file_id).getApplyId());
-        //String agent = request.getHeader("User-Agent");
-        //String fileName = fileData.getFileName();
-       // String fileName = "test";
         response.setHeader("content-type", "application/pdf");
         response.setContentType("application/pdf");
         response.setHeader("Content-Disposition", "inline;filename=\"" + fileName + "\"");
@@ -62,40 +58,41 @@ public class Converter {
             fo.close();
             os.close();
         }
-    }
-    public String converter(MultipartHttpServletRequest request)throws Exception{
-        MultipartFile file = request.getFile("file");
-        Random random=new Random();
-        int a=random.nextInt(50);
-        String filename=a+".docx";
-        FileOutputStream fos=new FileOutputStream(new File("/tmp/"+filename));
-        FileInputStream fs = (FileInputStream) file.getInputStream();
-
-        byte[] buffer = new byte[1024];
-        int len = 0;
-        while ((len = fs.read(buffer)) != -1) {
-            fos.write(buffer, 0, len
-        );
-        }
-        fos.close();
-        fs.close();
-        String result=executeCommand("/tmp/"+filename,"/tmp/");
-
-        if(result!=null&&!result.contains("Error")){
-            System.out.println("command result:"+result.trim());
-            Matcher matcher=pattern.matcher(result.trim());
-            System.out.println(matcher.matches());
-            System.out.println("group0:"+matcher.group(0));
-
-            result=matcher.group(2);
-            System.out.println("group1"+result);
-
-        }else{
-            throw new Exception("can't not convert to pdf,error format");
-        }
-        return result;
 
     }
+//    public String converter(MultipartHttpServletRequest request)throws Exception{
+//        MultipartFile file = request.getFile("file");
+//        Random random=new Random();
+//        int a=random.nextInt(50);
+//        String filename=a+".docx";
+//        FileOutputStream fos=new FileOutputStream(new File("/tmp/"+filename));
+//        FileInputStream fs = (FileInputStream) file.getInputStream();
+//
+//        byte[] buffer = new byte[1024];
+//        int len = 0;
+//        while ((len = fs.read(buffer)) != -1) {
+//            fos.write(buffer, 0, len
+//        );
+//        }
+//        fos.close();
+//        fs.close();
+//        String result=executeCommand("/tmp/"+filename,"/tmp/");
+//
+//        if(result!=null&&!result.contains("Error")){
+//            System.out.println("command result:"+result.trim());
+//            Matcher matcher=pattern.matcher(result.trim());
+//            System.out.println(matcher.matches());
+//            System.out.println("group0:"+matcher.group(0));
+//
+//            result=matcher.group(2);
+//            System.out.println("group1"+result);
+//
+//        }else{
+//            throw new Exception("can't not convert to pdf,error format");
+//        }
+//        return result;
+//
+//    }
     public static String executeCommand(String input_path,String output_folder_path){
        return execute("soffice --invisible --convert-to pdf --outdir " +output_folder_path+"  "+input_path);
     }

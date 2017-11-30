@@ -1,42 +1,61 @@
 package com.wps.util.converter;
 
 import com.wps.util.converter.service.FilePathUtil;
+import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.xwpf.usermodel.*;
+import org.apache.xmlbeans.SchemaType;
+import org.apache.xmlbeans.XmlOptions;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTBody;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTRow;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.impl.CTBodyImpl;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * The type Converter application tests.
+ */
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class ConverterApplicationTests {
+	/**
+	 * Context loads.
+	 *
+	 * @throws Exception the exception
+	 */
 	@Test
 	public void contextLoads() throws Exception{
 		try {
 
-			InputStream is = new FileInputStream("/home/ctt/yang-workspace/web/word2pdf-converter/converter/src/main/resources/template/form1.docx");
+			//InputStream is = new FileInputStream("/home/ctt/Downloads/test2.docx");
+//			InputStream is2 = new FileInputStream("/home/ctt/yang-workspace/web/word2pdf-converter/converter/src/main/resources/template/form1.docx");
+			OPCPackage pkg=OPCPackage.open(new FileInputStream("/home/ctt/Downloads/form1.docx"));
 			Map<String,Object> replacetor=new HashMap<String,Object>();
-			replacetor.put("companyCode","dianshu");
+			replacetor.put("eqCode","dianshu");
 			replacetor.put("manuComName","dierg");
 			replacetor.put("manufactureDate","hhhh");
 			Map<String,Object> replacetor2=new HashMap<String,Object>();
-			replacetor2.put("companyCode","好型急死了都放假了时间阿斯顿发生");
+			replacetor2.put("eqCode","好型急死了都放假了时间阿斯顿发生");
 			replacetor2.put("manuComName","dierg2");
 			replacetor2.put("manufactureDate","hhhh2");
 			List<Object> list=new ArrayList<Object>();
 			list.add(replacetor);
 			list.add(replacetor2);
 			list.add(replacetor);
-			XWPFDocument doc=new XWPFDocument(is);
+			XWPFDocument doc=new XWPFDocument(pkg);
+			XWPFDocument doc2=new XWPFDocument(doc.getPackage());
+			CTBody body=doc.getDocument().getBody();
+			CTBody body1=doc2.getDocument().getBody();
+			//appendBody(body,body1);
+			//appendBody(body,body1);
+//			XWPFDocument doc2=new XWPFDocument(is2);
+//			CTBody body2=doc2.getDocument().getBody();
 			List<XWPFTable> tables=doc.getTables();
 			XWPFTable table=tables.get(0);
 			int i=4;
@@ -73,14 +92,23 @@ public class ConverterApplicationTests {
 //			run2.setFontSize(10);
 //			run.setText("test");
 //			run.setFontSize(10);
-
-		this.replaceInPara(doc,replacetor);
-		this.replaceInTable(doc,replacetor);
-
+//
+			this.replaceInPara(doc,replacetor);
+			this.replaceInTable(doc,replacetor,0);
+			XWPFDocument doc3=new XWPFDocument(doc.getPackage());
+			this.replaceInPara(doc2,replacetor);
+			this.replaceInTable(doc2,replacetor,0);
+			this.replaceInPara(doc3,replacetor);
+			this.replaceInTable(doc3,replacetor,0);
+			appendBody(body,body1);
+			appendBody(body,doc3.getDocument().getBody());
 			OutputStream os = new FileOutputStream("/home/ctt/Downloads/test2.docx");
 			doc.write(os);
 			os.close();
-			is.close();
+			doc2.close();
+			doc.close();
+			doc3.close();
+			pkg.close();
 		}
 		catch (Exception e){
 			System.out.println(e.getMessage());
@@ -88,7 +116,21 @@ public class ConverterApplicationTests {
 		}
 	}
 
-
+	private static void appendBody(CTBody src, CTBody append) throws Exception {
+		try{XmlOptions optionsOuter = new XmlOptions();
+		optionsOuter.setSaveOuter();
+		String appendString = append.xmlText(optionsOuter);
+		String srcString = src.xmlText();
+		String prefix = srcString.substring(0,srcString.indexOf(">")+1);
+		String mainPart = srcString.substring(srcString.indexOf(">")+1,srcString.lastIndexOf("<"));
+		String sufix = srcString.substring( srcString.lastIndexOf("<") );
+		String addPart = appendString.substring(appendString.indexOf(">") + 1, appendString.lastIndexOf("<"));
+		CTBody makeBody = CTBody.Factory.parse(prefix+mainPart+addPart+sufix);
+		src.set(makeBody);}
+		catch (Exception e){
+			src=append;
+		}
+	}
 	/**
 	 * 替换段落里面的变量
 	 *
@@ -161,6 +203,31 @@ public class ConverterApplicationTests {
 		}
 	}
 
+	/**
+	 * replace in specific table with index
+	 * @param doc document you want to change
+	 * @param params	replace text map list
+	 * @param tableIndex	table Index
+	 */
+	private void replaceInTable(XWPFDocument doc, Map<String, Object> params,int tableIndex) {
+		XWPFTable table;
+		List<XWPFTableRow> rows;
+		List<XWPFTableCell> cells;
+		List<XWPFParagraph> paras;
+
+			table = doc.getTables().get(tableIndex);
+			rows = table.getRows();
+			for (XWPFTableRow row : rows) {
+				cells = row.getTableCells();
+				for (XWPFTableCell cell : cells) {
+					paras = cell.getParagraphs();
+					for (XWPFParagraph para : paras) {
+						this.replaceInPara(para, params);
+					}
+				}
+			}
+
+	}
 	/**
 	 * 正则匹配字符串
 	 *

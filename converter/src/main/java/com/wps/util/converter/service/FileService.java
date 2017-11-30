@@ -1,6 +1,9 @@
 package com.wps.util.converter.service;
 
 import org.apache.poi.xwpf.usermodel.*;
+import org.apache.xmlbeans.XmlOptions;
+import org.openxmlformats.schemas.drawingml.x2006.main.CTBaseStylesOverride;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTBody;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTRow;
 
 import java.io.FileInputStream;
@@ -29,13 +32,17 @@ public class FileService {
 
             XWPFDocument doc=new XWPFDocument(is);
             if(form_type==2){
-                form2Sublist(doc,(List<Object>)replacetor.get("subList"),4);
+                form2Sublist(doc,(List<Object>)replacetor.get("subList"),4,0);
+
             }
             if(form_type==5){
-                form2Sublist(doc,(List<Object>)replacetor.get("subList"),5);
+                form2Sublist(doc,(List<Object>)replacetor.get("subList"),5,0);
             }
             if(form_type==7||form_type==6){
-                form2Sublist(doc,(List<Object>)replacetor.get("subList"),1);
+                generateCylindersOrPipes(doc,(List<Object>)replacetor.get("subList"),replacetor);
+            }else{
+                this.replaceInPara(doc,replacetor);
+                this.replaceInTable(doc,replacetor);
             }
 
 //            if(replacetor.get("subList")!=null)
@@ -63,8 +70,7 @@ public class FileService {
 //			run.setText("test");
 //			run.setFontSize(10);
 
-            this.replaceInPara(doc,replacetor);
-            this.replaceInTable(doc,replacetor);
+
 
             OutputStream os = new FileOutputStream(OUTPUT_PATH);
             doc.write(os);
@@ -77,11 +83,13 @@ public class FileService {
         }
         return OUTPUT_PATH;
     }
-    private void form2Sublist(XWPFDocument doc,List<Object> list,int list_pos){
-        XWPFTable table=doc.getTables().get(0);
+    private void form2Sublist(XWPFDocument doc,List<Object> list,int list_pos,int table_index){
+        XWPFTable table=doc.getTables().get(table_index);
+
         int i=0;
         for(Object str:list){
             Map<String,Object> map=(Map<String,Object>)str;
+            map.put("iid",i+1);
             CTRow ctRow=CTRow.Factory.newInstance();
             ctRow.set(table.getRow(list_pos).getCtRow());
             XWPFTableRow row=new XWPFTableRow(ctRow,table);
@@ -94,17 +102,56 @@ public class FileService {
             }
             i++;
             table.addRow(row,list_pos+i);
-
+            if(i==9){
+                break;
+            }
         }
         table.removeRow(list_pos);
     }
 
-    /**
-     * 替换段落里面的变量
-     *
-     * @param doc    要替换的文档
-     * @param params 参数
-     */
+    private void generateCylindersOrPipes(XWPFDocument doc, List<Object> list, Map<String, Object> replacetor)throws  Exception{
+
+
+        int page_size=list.size()>list.size()/10*10?(list.size()/10+1):list.size()/10;
+
+        CTBody body=doc.getDocument().getBody();
+        replacetor.put("pageSize",page_size);
+        replacetor.put("pageNum",1);
+        form2Sublist(doc,list.subList(0,list.size()),1,0);
+        replaceInPara(doc,replacetor);
+        replaceInTable(doc,replacetor);
+        for(int i=1;i<page_size;i++){
+            XWPFDocument doc2=new XWPFDocument(doc.getPackage());
+            form2Sublist(doc2,list.subList(10*i,list.size()),1,0);
+            CTBody body2=doc2.getDocument().getBody();
+            replacetor.put("pageNum",i+1);
+            replaceInPara(doc2,replacetor);
+            replaceInTable(doc2,replacetor);
+            appendBody(body,body2);
+        }
+
+//        for(int j=0;j<page_size;j++){
+//            form2Sublist(doc,list.subList(j*10,list.size()),1,j);
+//        }
+    }
+    private static void appendBody(CTBody src, CTBody append) throws Exception {
+        XmlOptions optionsOuter = new XmlOptions();
+        optionsOuter.setSaveOuter();
+        String appendString = append.xmlText(optionsOuter);
+        String srcString = src.xmlText();
+        String prefix = srcString.substring(0,srcString.indexOf(">")+1);
+        String mainPart = srcString.substring(srcString.indexOf(">")+1,srcString.lastIndexOf("<"));
+        String sufix = srcString.substring( srcString.lastIndexOf("<") );
+        String addPart = appendString.substring(appendString.indexOf(">") + 1, appendString.lastIndexOf("<"));
+        CTBody makeBody = CTBody.Factory.parse(prefix+mainPart+addPart+sufix);
+        src.set(makeBody);
+    }
+        /**
+         * 替换段落里面的变量
+         *
+         * @param doc    要替换的文档
+         * @param params 参数
+         */
     private void replaceInPara(XWPFDocument doc, Map<String, Object> params) {
         Iterator<XWPFParagraph> iterator = doc.getParagraphsIterator();
         XWPFParagraph para;
