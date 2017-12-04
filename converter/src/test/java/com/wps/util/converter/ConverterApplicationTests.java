@@ -37,6 +37,7 @@ public class ConverterApplicationTests {
 //			InputStream is2 = new FileInputStream("/home/ctt/yang-workspace/web/word2pdf-converter/converter/src/main/resources/template/form1.docx");
 			OPCPackage pkg=OPCPackage.open(new FileInputStream("/home/ctt/Downloads/form1.docx"));
 			Map<String,Object> replacetor=new HashMap<String,Object>();
+			replacetor.put("registKind","kkkkkk");
 			replacetor.put("eqCode","dianshu");
 			replacetor.put("manuComName","dierg");
 			replacetor.put("manufactureDate","hhhh");
