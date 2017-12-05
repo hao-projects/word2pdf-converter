@@ -1,20 +1,14 @@
 package com.wps.util.converter.controller;
 import com.wps.util.converter.service.FileService;
-import org.artofsolving.jodconverter.OfficeDocumentConverter;
-import org.artofsolving.jodconverter.office.DefaultOfficeManagerConfiguration;
-import org.artofsolving.jodconverter.office.OfficeManager;
+import org.jodconverter.DocumentConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.util.Map;
 import java.util.Random;
-import java.util.concurrent.Callable;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Controller
@@ -100,30 +94,36 @@ public class Converter {
 //        return result;
 //
 //    }
+    @Autowired
+    private DocumentConverter documentConverter;
+
 
     public void  convert2pdf(String inputFilePath,String outputFilePath)throws Exception{
-        DefaultOfficeManagerConfiguration config=new DefaultOfficeManagerConfiguration();
-        String officeHome =getOfficeHome();
-        config.setOfficeHome(officeHome);
-
-        OfficeManager officeManager = config.buildOfficeManager();
-        officeManager.start();
-
-        OfficeDocumentConverter converter = new OfficeDocumentConverter(officeManager);
-//        String inputFilePath="/home/ctt/Downloads/formForTest.docx";
-//        String outputFilePath = "/home/ctt/Downloads/formForTest.pdf";
-        File inputFile = new File(inputFilePath);
-        if (inputFile.exists()) {
-            // 找不到源文件, 则返回
-            File outputFile = new File(outputFilePath);
-            if (!outputFile.getParentFile().exists()) {
-                // 假如目标路径不存在, 则新建该路径
-                outputFile.getParentFile().mkdirs();
-            }
-            converter.convert(inputFile, outputFile);
-        }
-
-        officeManager.stop();
+//        DefaultOfficeManagerConfiguration config=new DefaultOfficeManagerConfiguration();
+//        String officeHome =getOfficeHome();
+//        config.setOfficeHome(officeHome);
+//
+//        OfficeManager officeManager = config.buildOfficeManager();
+//        officeManager.start();
+//
+//        OfficeDocumentConverter converter = new OfficeDocumentConverter(officeManager);
+////        String inputFilePath="/home/ctt/Downloads/formForTest.docx";
+////        String outputFilePath = "/home/ctt/Downloads/formForTest.pdf";
+//        File inputFile = new File(inputFilePath);
+//        if (inputFile.exists()) {
+//            // 找不到源文件, 则返回
+//            File outputFile = new File(outputFilePath);
+//            if (!outputFile.getParentFile().exists()) {
+//                // 假如目标路径不存在, 则新建该路径
+//                outputFile.getParentFile().mkdirs();
+//            }
+//            converter.convert(inputFile, outputFile);
+//        }
+//
+//        officeManager.stop();
+        File inputFile=new File(inputFilePath);
+        File outputFile=new File(outputFilePath);
+        documentConverter.convert(inputFile).to(outputFile).execute();
     }
     public  String getOfficeHome()throws Exception {
         return env.getProperty("libreOffice.homePath");
