@@ -49,6 +49,32 @@
 		<artifactId>poi-ooxml-schemas</artifactId>
 		<version>3.15</version>
 	</dependency>
+		<!--<dependency>-->
+			<!--<groupId>org.jodconverter</groupId>-->
+			<!--<artifactId>jodconverter-local</artifactId>-->
+			<!--<version>4.1.0</version>-->
+		<!--</dependency>-->
+		<dependency>
+			<groupId>org.openoffice</groupId>
+			<artifactId>ridl</artifactId>
+			<version>4.1.2</version>
+		</dependency>
+		<dependency>
+			<groupId>org.openoffice</groupId>
+			<artifactId>juh</artifactId>
+			<version>4.1.2</version>
+		</dependency>
+		<dependency>
+			<groupId>org.openoffice</groupId>
+			<artifactId>unoil</artifactId>
+			<version>4.1.2</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.artofsolving.jodconverter/jodconverter-core -->
+		<dependency>
+			<groupId>org.artofsolving.jodconverter</groupId>
+			<artifactId>jodconverter-core</artifactId>
+			<version>3.0-beta-4</version>
+		</dependency>
 
 		<dependency>
 			<groupId>org.apache.poi</groupId>
@@ -79,6 +105,7 @@
 			<id>spring-milestones</id>
 			<url>http://repo.spring.io/milestone</url>
 		</repository>
+
 	</repositories>
 	<pluginRepositories>
 		<pluginRepository>

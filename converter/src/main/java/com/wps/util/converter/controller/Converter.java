@@ -1,5 +1,9 @@
 package com.wps.util.converter.controller;
 import com.wps.util.converter.service.FileService;
+import org.artofsolving.jodconverter.OfficeDocumentConverter;
+import org.artofsolving.jodconverter.office.DefaultOfficeManagerConfiguration;
+import org.artofsolving.jodconverter.office.OfficeManager;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -16,6 +20,8 @@ import java.util.regex.Pattern;
 @Controller
 
 public class Converter {
+    @Autowired
+    private org.springframework.core.env.Environment env;
     private static Pattern pattern=Pattern.compile("(.*)->\\s(\\S*)(.*)(\\n*)(.*)");
     @RequestMapping(value = "/getpdf/{formType}")
     public void download(@RequestBody Map<String,Object> formMap, @PathVariable("formType") int formType, HttpServletResponse response)throws Exception{
@@ -24,20 +30,21 @@ public class Converter {
         System.out.println(formMap.toString());
         FileService fileService=new FileService();
         String path=fileService.file(formMap,formType);
-        String result=executeCommand(path,"/tmp/");
-
-        if(result!=null&&!result.contains("Error")){
-            System.out.println("command result:"+result.trim());
-            Matcher matcher=pattern.matcher(result.trim());
-            System.out.println(matcher.matches());
-            System.out.println("group0:"+matcher.group(0));
-
-            result=matcher.group(2);
-            System.out.println("group1"+result);
-
-        }else{
-            throw new Exception("can't not convert to pdf,error format");
-        }
+       // String result=executeCommand(path,"/tmp/");
+        String result="/tmp/test.pdf";
+        convert2pdf(path,result);
+//        if(result!=null&&!result.contains("Error")){
+//            System.out.println("command result:"+result.trim());
+//            Matcher matcher=pattern.matcher(result.trim());
+//            System.out.println(matcher.matches());
+//            System.out.println("group0:"+matcher.group(0));
+//
+//            result=matcher.group(2);
+//            System.out.println("group1"+result);
+//
+//        }else{
+//            throw new Exception("can't not convert to pdf,error format");
+//        }
         File file = new File(result);
         Random random=new Random();
         int a=random.nextInt(50);
@@ -93,6 +100,34 @@ public class Converter {
 //        return result;
 //
 //    }
+
+    public void  convert2pdf(String inputFilePath,String outputFilePath)throws Exception{
+        DefaultOfficeManagerConfiguration config=new DefaultOfficeManagerConfiguration();
+        String officeHome =getOfficeHome();
+        config.setOfficeHome(officeHome);
+
+        OfficeManager officeManager = config.buildOfficeManager();
+        officeManager.start();
+
+        OfficeDocumentConverter converter = new OfficeDocumentConverter(officeManager);
+//        String inputFilePath="/home/ctt/Downloads/formForTest.docx";
+//        String outputFilePath = "/home/ctt/Downloads/formForTest.pdf";
+        File inputFile = new File(inputFilePath);
+        if (inputFile.exists()) {
+            // 找不到源文件, 则返回
+            File outputFile = new File(outputFilePath);
+            if (!outputFile.getParentFile().exists()) {
+                // 假如目标路径不存在, 则新建该路径
+                outputFile.getParentFile().mkdirs();
+            }
+            converter.convert(inputFile, outputFile);
+        }
+
+        officeManager.stop();
+    }
+    public  String getOfficeHome()throws Exception {
+        return env.getProperty("libreOffice.homePath");
+    }
     public static String executeCommand(String input_path,String output_folder_path){
        return execute("soffice --invisible --convert-to pdf --outdir " +output_folder_path+"  "+input_path);
     }

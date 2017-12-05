@@ -3,13 +3,11 @@ package com.wps.util.converter;
 import com.wps.util.converter.service.FilePathUtil;
 import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.xwpf.usermodel.*;
-import org.apache.xmlbeans.SchemaType;
 import org.apache.xmlbeans.XmlOptions;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTBody;
-import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTRow;
-import org.openxmlformats.schemas.wordprocessingml.x2006.main.impl.CTBodyImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -21,7 +19,7 @@ import java.util.regex.Pattern;
 /**
  * The type Converter application tests.
  */
-@RunWith(SpringRunner.class)
+//@RunWith(SpringRunner.class)
 @SpringBootTest
 public class ConverterApplicationTests {
 	/**
@@ -29,13 +27,21 @@ public class ConverterApplicationTests {
 	 *
 	 * @throws Exception the exception
 	 */
+
+//	@Test
+//	public void word2pdf() throws Exception{
+//		OpenOfficePDFConverter converter=new OpenOfficePDFConverter();
+//		File input=new File("/home/ctt/Downloads/form1.docx");
+//		File output=new File("/home/ctt/Downloads/formtest.pdf");
+//		converter.convert2PDF("/home/ctt/Downloads/form1.docx","/home/ctt/Downloads/formtest.pdf");
+//	}
 	@Test
 	public void contextLoads() throws Exception{
 		try {
 
 			//InputStream is = new FileInputStream("/home/ctt/Downloads/test2.docx");
 //			InputStream is2 = new FileInputStream("/home/ctt/yang-workspace/web/word2pdf-converter/converter/src/main/resources/template/form1.docx");
-			OPCPackage pkg=OPCPackage.open(new FileInputStream("/home/ctt/Downloads/form1.docx"));
+			OPCPackage pkg=OPCPackage.open(new FileInputStream("/home/ctt/yang-workspace/web/word2pdf-converter/converter/src/main/resources/template/form1.docx"));
 			Map<String,Object> replacetor=new HashMap<String,Object>();
 			replacetor.put("registKind","kkkkkk");
 			replacetor.put("eqCode","dianshu");
