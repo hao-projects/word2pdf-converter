@@ -5,7 +5,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.jodconverter.DocumentConverter;
 import org.jodconverter.LocalConverter;
-import org.jodconverter.boot.autoconfigure.JodConverterProperties;
+//import org.jodconverter.boot.autoconfigure.JodConverterProperties;
 import org.jodconverter.office.LocalOfficeManager;
 import org.jodconverter.office.OfficeManager;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
