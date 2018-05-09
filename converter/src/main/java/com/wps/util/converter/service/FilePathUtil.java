@@ -9,7 +9,8 @@ public class FilePathUtil {
     public static String getPathById(){
         //String path=ClassLoader.getSystemResource("").getPath();
 //        path=path+"static//";
-        String path = FileService.class.getClassLoader().getResource("static").getPath();
+//        String path = FileService.class.getClassLoader().getResource("static").getPath();
+        String path=System.getProperty("user.dir")+"/word_files/";
         System.out.println(path);
         return  path;
     }

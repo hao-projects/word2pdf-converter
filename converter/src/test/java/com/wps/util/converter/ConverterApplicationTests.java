@@ -1,5 +1,6 @@
 package com.wps.util.converter;
 
+import com.sun.javafx.scene.shape.PathUtils;
 import com.wps.util.converter.service.FilePathUtil;
 import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.xwpf.usermodel.*;
@@ -37,90 +38,91 @@ public class ConverterApplicationTests {
 //	}
 	@Test
 	public void contextLoads() throws Exception{
-		try {
-
-			//InputStream is = new FileInputStream("/home/ctt/Downloads/test2.docx");
-//			InputStream is2 = new FileInputStream("/home/ctt/yang-workspace/web/word2pdf-converter/converter/src/main/resources/static/form1.docx");
-			OPCPackage pkg=OPCPackage.open(new FileInputStream("/home/ctt/yang-workspace/web/word2pdf-converter/converter/src/main/resources/static/form1.docx"));
-			Map<String,Object> replacetor=new HashMap<String,Object>();
-			replacetor.put("registKind","kkkkkk");
-			replacetor.put("eqCode","dianshu");
-			replacetor.put("manuComName","dierg");
-			replacetor.put("manufactureDate","hhhh");
-			Map<String,Object> replacetor2=new HashMap<String,Object>();
-			replacetor2.put("eqCode","好型急死了都放假了时间阿斯顿发生");
-			replacetor2.put("manuComName","dierg2");
-			replacetor2.put("manufactureDate","hhhh2");
-			List<Object> list=new ArrayList<Object>();
-			list.add(replacetor);
-			list.add(replacetor2);
-			list.add(replacetor);
-			XWPFDocument doc=new XWPFDocument(pkg);
-			XWPFDocument doc2=new XWPFDocument(doc.getPackage());
-			CTBody body=doc.getDocument().getBody();
-			CTBody body1=doc2.getDocument().getBody();
-			//appendBody(body,body1);
-			//appendBody(body,body1);
-//			XWPFDocument doc2=new XWPFDocument(is2);
-//			CTBody body2=doc2.getDocument().getBody();
-			List<XWPFTable> tables=doc.getTables();
-			XWPFTable table=tables.get(0);
-			int i=4;
-			List<XWPFTableRow> header=new ArrayList<XWPFTableRow>();
+//		try {
 //
-//			for(Object str:list){
-//				System.out.println(i);
-//				Map<String,Object> map=(Map<String,Object>)str;
-//				//System.out.println(j);
-//				CTRow ctRow=CTRow.Factory.newInstance();
-//				ctRow.set(table.getRow(4).getCtRow());
-//				XWPFTableRow row=new XWPFTableRow(ctRow,table);
-//				for(XWPFTableCell cell:row.getTableCells())
-//				{
-//					for(XWPFParagraph para:cell.getParagraphs()){
-//						replaceInPara(para,map);
-//					}
+//			//InputStream is = new FileInputStream("/home/ctt/Downloads/test2.docx");
+////			InputStream is2 = new FileInputStream("/home/ctt/yang-workspace/web/word2pdf-converter/converter/src/main/resources/static/form1.docx");
+//			OPCPackage pkg=OPCPackage.open(new FileInputStream("/home/ctt/yang-workspace/web/word2pdf-converter/converter/src/main/resources/static/form1.docx"));
+//			Map<String,Object> replacetor=new HashMap<String,Object>();
+//			replacetor.put("registKind","kkkkkk");
+//			replacetor.put("eqCode","dianshu");
+//			replacetor.put("manuComName","dierg");
+//			replacetor.put("manufactureDate","hhhh");
+//			Map<String,Object> replacetor2=new HashMap<String,Object>();
+//			replacetor2.put("eqCode","好型急死了都放假了时间阿斯顿发生");
+//			replacetor2.put("manuComName","dierg2");
+//			replacetor2.put("manufactureDate","hhhh2");
+//			List<Object> list=new ArrayList<Object>();
+//			list.add(replacetor);
+//			list.add(replacetor2);
+//			list.add(replacetor);
+//			XWPFDocument doc=new XWPFDocument(pkg);
+//			XWPFDocument doc2=new XWPFDocument(doc.getPackage());
+//			CTBody body=doc.getDocument().getBody();
+//			CTBody body1=doc2.getDocument().getBody();
+//			//appendBody(body,body1);
+//			//appendBody(body,body1);
+////			XWPFDocument doc2=new XWPFDocument(is2);
+////			CTBody body2=doc2.getDocument().getBody();
+//			List<XWPFTable> tables=doc.getTables();
+//			XWPFTable table=tables.get(0);
+//			int i=4;
+//			List<XWPFTableRow> header=new ArrayList<XWPFTableRow>();
+////
+////			for(Object str:list){
+////				System.out.println(i);
+////				Map<String,Object> map=(Map<String,Object>)str;
+////				//System.out.println(j);
+////				CTRow ctRow=CTRow.Factory.newInstance();
+////				ctRow.set(table.getRow(4).getCtRow());
+////				XWPFTableRow row=new XWPFTableRow(ctRow,table);
+////				for(XWPFTableCell cell:row.getTableCells())
+////				{
+////					for(XWPFParagraph para:cell.getParagraphs()){
+////						replaceInPara(para,map);
+////					}
+////
+////				}
+////				table.addRow(row,5);
+////
+////			}
+////			table.removeRow(4);
 //
-//				}
-//				table.addRow(row,5);
 //
-//			}
-//			table.removeRow(4);
-
-
-			//table.addNewRowBetween(0,1);
-
-
-			// header.getCell(1).removeParagraph(0);
-//			XWPFRun run= header.getCell(1).addParagraph().createRun();
-//			header.getCell(3).removeParagraph(0);
-//			XWPFRun run2= header.getCell(3).addParagraph().createRun();
-//			run2.setText("test");
-//			run2.setFontSize(10);
-//			run.setText("test");
-//			run.setFontSize(10);
+//			//table.addNewRowBetween(0,1);
 //
-			this.replaceInPara(doc,replacetor);
-			this.replaceInTable(doc,replacetor,0);
-			XWPFDocument doc3=new XWPFDocument(doc.getPackage());
-			this.replaceInPara(doc2,replacetor);
-			this.replaceInTable(doc2,replacetor,0);
-			this.replaceInPara(doc3,replacetor);
-			this.replaceInTable(doc3,replacetor,0);
-			appendBody(body,body1);
-			appendBody(body,doc3.getDocument().getBody());
-			OutputStream os = new FileOutputStream("/home/ctt/Downloads/test2.docx");
-			doc.write(os);
-			os.close();
-			doc2.close();
-			doc.close();
-			doc3.close();
-			pkg.close();
-		}
-		catch (Exception e){
-			System.out.println(e.getMessage());
-			e.printStackTrace();
-		}
+//
+//			// header.getCell(1).removeParagraph(0);
+////			XWPFRun run= header.getCell(1).addParagraph().createRun();
+////			header.getCell(3).removeParagraph(0);
+////			XWPFRun run2= header.getCell(3).addParagraph().createRun();
+////			run2.setText("test");
+////			run2.setFontSize(10);
+////			run.setText("test");
+////			run.setFontSize(10);
+////
+//			this.replaceInPara(doc,replacetor);
+//			this.replaceInTable(doc,replacetor,0);
+//			XWPFDocument doc3=new XWPFDocument(doc.getPackage());
+//			this.replaceInPara(doc2,replacetor);
+//			this.replaceInTable(doc2,replacetor,0);
+//			this.replaceInPara(doc3,replacetor);
+//			this.replaceInTable(doc3,replacetor,0);
+//			appendBody(body,body1);
+//			appendBody(body,doc3.getDocument().getBody());
+//			OutputStream os = new FileOutputStream("/home/ctt/Downloads/test2.docx");
+//			doc.write(os);
+//			os.close();
+//			doc2.close();
+//			doc.close();
+//			doc3.close();
+//			pkg.close();
+//		}
+//		catch (Exception e){
+//			System.out.println(e.getMessage());
+//			e.printStackTrace();
+//		}
+		System.out.println(FilePathUtil.getPathById());
 	}
 
 	private static void appendBody(CTBody src, CTBody append) throws Exception {
