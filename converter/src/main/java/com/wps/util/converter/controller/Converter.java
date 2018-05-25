@@ -25,7 +25,7 @@ public class Converter {
         FileService fileService=new FileService();
         String path=fileService.file(formMap,formType);
        // String result=executeCommand(path,"/tmp/");
-        String result="/tmp/test.pdf";
+        String result="/home/zy/test.pdf";
         convert2pdf(path,result);
 //        if(result!=null&&!result.contains("Error")){
 //            System.out.println("command result:"+result.trim());
@@ -46,19 +46,15 @@ public class Converter {
         response.setHeader("content-type", "application/pdf");
         response.setContentType("application/pdf");
         response.setHeader("Content-Disposition", "inline;filename=\"" + fileName + "\"");
-        OutputStream os=response.getOutputStream();
-        FileInputStream fo=new FileInputStream(file);
-        try{
+        try( OutputStream os=response.getOutputStream();
+             FileInputStream fo=new FileInputStream(file)){
             byte[] bis=readStream(fo);
             os.write(bis);
             os.flush();
-        } catch (Exception e) {
+        }catch (Exception e){
             e.printStackTrace();
-            throw e;
-        }finally {
-            fo.close();
-            os.close();
         }
+
 
     }
 //    public String converter(MultipartHttpServletRequest request)throws Exception{

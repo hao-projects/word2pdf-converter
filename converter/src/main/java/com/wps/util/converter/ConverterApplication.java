@@ -14,6 +14,7 @@ public class ConverterApplication extends SpringBootServletInitializer {
 	}
 
 	public static void main(String[] args) throws Exception {
+//		System.out.println(System.getProperty("user.dir"));
 		SpringApplication.run(ConverterApplication.class, args);
 	}
 
