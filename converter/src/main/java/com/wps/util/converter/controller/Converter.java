@@ -1,5 +1,6 @@
 package com.wps.util.converter.controller;
 import com.wps.util.converter.service.FileService;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.jodconverter.DocumentConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -25,7 +26,9 @@ public class Converter {
         FileService fileService=new FileService();
         String path=fileService.file(formMap,formType);
        // String result=executeCommand(path,"/tmp/");
-        String result="/home/zy/test.pdf";
+        String result = "/home/zy/converter/tmp/"+RandomStringUtils.randomAlphanumeric(5)+".pdf";
+
+
         convert2pdf(path,result);
 //        if(result!=null&&!result.contains("Error")){
 //            System.out.println("command result:"+result.trim());
@@ -53,6 +56,9 @@ public class Converter {
             os.flush();
         }catch (Exception e){
             e.printStackTrace();
+        }
+        if(file.isFile() && file.exists()){
+            file.delete();
         }
 
 

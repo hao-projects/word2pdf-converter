@@ -2,6 +2,7 @@ package com.wps.util.converter;
 
 import com.sun.javafx.scene.shape.PathUtils;
 import com.wps.util.converter.service.FilePathUtil;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.xwpf.usermodel.*;
 import org.apache.xmlbeans.XmlOptions;
@@ -21,7 +22,7 @@ import java.util.regex.Pattern;
  * The type Converter application tests.
  */
 //@RunWith(SpringRunner.class)
-@SpringBootTest
+//@SpringBootTest
 public class ConverterApplicationTests {
 	/**
 	 * Context loads.
@@ -122,7 +123,7 @@ public class ConverterApplicationTests {
 //			System.out.println(e.getMessage());
 //			e.printStackTrace();
 //		}
-		System.out.println(FilePathUtil.getPathById());
+		System.out.println(RandomStringUtils.randomAlphanumeric(100));
 	}
 
 	private static void appendBody(CTBody src, CTBody append) throws Exception {
@@ -247,6 +248,10 @@ public class ConverterApplicationTests {
 	private Matcher matcher(String str) {
 		Matcher matcher = pattern.matcher(str);
 		return matcher;
+	}
+
+	public static void main(){
+		System.out.println(RandomStringUtils.randomAlphanumeric(100));
 	}
 
 }
