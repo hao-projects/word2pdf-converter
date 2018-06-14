@@ -16,9 +16,9 @@ public class JodConverterProperties {
     private boolean killExistingProcess = true;
     private long processTimeout = 120000L;
     private long processRetryInterval = 250L;
-    private long taskExecutionTimeout = 120000L;
+    private long taskExecutionTimeout = 1000 * 60 * 5L;
     private int maxTasksPerProcess = 200;
-    private long taskQueueTimeout = 30000L;
+    private long taskQueueTimeout = 1000 * 60 * 60 * 24L;
 
     public JodConverterProperties() {
     }
